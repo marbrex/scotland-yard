@@ -1,15 +1,15 @@
 // Map sources
-var accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-var mapboxUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + accessToken;
+var accessToken = 'pk.eyJ1IjoibWFyYnJleCIsImEiOiJja2tpcnA5ZDgwbndkMnVrN2t4MWs4NjA5In0.SyweHd2yUjuEfmnQ_TFiDg';
+var mapboxUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + accessToken;
 
 // BASE Layers (Tile Layers or tiles)
 // base means that only one can be visible on the map at a time
-var streets = L.tileLayer(mapboxUrl, {
-	id: 'mapbox.streets'
+var dark = L.tileLayer(mapboxUrl, {
+	id: 'mapbox/dark-v10'
 });
 
 var satellite = L.tileLayer(mapboxUrl, {
-	id: 'mapbox.satellite'
+	id: 'mapbox/satellite-v9'
 });
 
 
@@ -24,7 +24,7 @@ var map = L.map('mapid', {
     maxZoom: 17,
     maxBounds: L.latLngBounds(L.latLng(45.842, 4.721), L.latLng(45.657, 5.011)), // user cannot drag the map outside these points (does not affect zoom)
 	attributionControl: false, // to hide a "Leaflet" annotation at the right bottom corner
-	layers: [streets] // array of Layers which will be added initially
+	layers: dark // array of Layers which will be added initially
 });
 
 
@@ -340,14 +340,14 @@ function onClickLayerQuartiersToGo(e) {
         xhr.onreadystatechange = function() { //Call a function when the state changes.
             if(this.readyState == 4 && this.status == 200) { // complete and no errors
                 // some processing here, or whatever you want to do with the response
-                // document.body.innerHTML = "";
-                // document.write(this.responseText);
+                document.body.innerHTML = "";
+                document.write(this.responseText);
 
-                var parser = new DOMParser();
-                var responseObject = parser.parseFromString(this.response, "text/html");
-                console.log(responseObject.getElementById('php-to-js-variables').innerHTML);
-                document.getElementById('php-to-js-variables').innerHTML = responseObject.getElementById('php-to-js-variables').innerHTML;
-                map._onResize();
+                // var parser = new DOMParser();
+                // var responseObject = parser.parseFromString(this.response, "text/html");
+                // console.log(responseObject.getElementById('php-to-js-variables').innerHTML);
+                // document.getElementById('php-to-js-variables').innerHTML = responseObject.getElementById('php-to-js-variables').innerHTML;
+                // map._onResize();
 
                 // console.log(this.response)
             }
@@ -526,7 +526,7 @@ layerQuartiersToGo.eachLayer(function(layer){
 // Base means that only one can be visible on the map at a time.
 // Also called Tile layers or Tiles.
 var baseMaps = {
-	'Streets': streets,
+	'Dark': dark,
     'Satellite': satellite
 };
 
