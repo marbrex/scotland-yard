@@ -148,9 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 		require('controllers/random_quartier_depart.php'); // Script PHP qui genere les positions de depart pour chaque joueur
-		if (!isset($_SESSION['GeoJsonLoaded'])) {
+		if (!isset($_COOKIE['GeoJsonLoaded'])) {
 			require('controllers/quartierData.php'); // Script PHP qui genere le fichier GeoJSON
-			$_SESSION['GeoJsonLoaded'] = true;
+			setcookie('GeoJsonLoaded', true, time() + (86400 * 7), "/"); // 86400 = 1 day
 		}
 
 

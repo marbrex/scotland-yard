@@ -13,10 +13,6 @@ Kasmamytov Eldar p1712650
  - SQL et L'integration des donnees (J'ai utilise les requetes SQL pour recuperer les donnees de dataset et les boucles pour peupler ma base de donnee)
  - PHP (Toute la strategie basique, la generation des positions de depart, le deplacement des detectives et MX, etc.)
 
-Brami Christian p1926198
- - Base de Donnees (la diagramme E/A, le schéma Relationnel)
- - PHP (le code php pour les strategies econome et pistage)
-
  !!! ATTENTION !!!
  C'est l'archive du projet que j'ai utilise en local.
  Tout le code est le meme, sauf que sur le serveur
@@ -32,9 +28,9 @@ session_start();
 require('inc/includes.php');
 require('inc/routes.php');
 require('model/model.php');
-if (!isset($_SESSION['dataLoaded'])) {
+if (!isset($_COOKIE['dataLoaded'])) {
 	require('dataset.php'); // Script PHP qui peuple les tables de la BD locale
-	$_SESSION['dataLoaded'] = true;
+	setcookie('dataLoaded', true, time() + (86400 * 7), "/"); // 86400 = 1 day
 }
 $connection = getConnectBD($server, $login, $pwd, $tableDB);
 
@@ -53,6 +49,8 @@ if(isset($_GET['page'])) {
 if ($controller != '') {
 	include("controllers/$controller.php");
 }
-include("views/$view.php");
+if (!isset($_POST['onlyController']) || $_POST['onlyController'] == 'false') {
+	include("views/$view.php");
+}
 
 ?>

@@ -8,7 +8,9 @@ $req = "SELECT idQ, nomQ, coordsQ, nomC FROM scotlandyard_project.quartier q NAT
 $result = mysqli_query($connection, $req);
 
 
-file_put_contents('js/quartierData.js', 'var quartierData = {
+$filename = 'js/quartierData.geojson';
+
+file_put_contents($filename, '{
 	"type" : "FeatureCollection",
 	"features" : [');
 
@@ -30,26 +32,31 @@ while ($row = mysqli_fetch_array($result)) {
 	// On enleve la derniere virgule et l'espace inseres
 	$coordsQ = substr($coordsQ, 0, -2);
 
-	file_put_contents('js/quartierData.js', '
-	{
-		"type" : "Feature",
-		"id" : "'.$row['idQ'].'",
-		"properties" : {
-			"name" : "'.$row['nomQ'].'",
-			"commune" : "'.$row['nomC'].'"
-		},
-		"geometry" : {
-			"type" : "Polygon",
-			"coordinates" : [
-				['.$coordsQ.']
-			]
-		}
-	},', FILE_APPEND);
-	}
+	file_put_contents($filename, '
+		{
+			"type" : "Feature",
+			"id" : "'.$row['idQ'].'",
+			"properties" : {
+				"name" : "'.$row['nomQ'].'",
+				"commune" : "'.$row['nomC'].'"
+			},
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					['.$coordsQ.']
+				]
+			}
+		},', FILE_APPEND);
+}
 
-	file_put_contents('js/quartierData.js', '
+$fh = fopen($filename, 'r+') or die("can't open file");
+$stat = fstat($fh);
+ftruncate($fh, $stat['size']-1);
+fclose($fh); 
+
+file_put_contents($filename, '
 	]
-};
+}
 ', FILE_APPEND);
 
 ?>

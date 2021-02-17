@@ -1,5 +1,9 @@
 <?php
 
+if (isset($_POST['isFetch']) && $_POST['isFetch'] == 'true') {
+	header('Content-type: application/json');
+}
+
 function randomQuartierTourDetectives($i,$res)
 {
     $tabRoutesDet[$i] = array();
@@ -117,7 +121,10 @@ if ($_SESSION['tourActuel'] >= 20) {
 	if ($res == false) {
 		write_log("The following request has been failed : $req\n");
 	}
-	header("Location: $url/scotlandyard/index.php?page=gameover");
+	
+	$_SESSION['gameEndedMessage'] = "20+ tours!";
+	$_SESSION['gameEnded'] = true;
+	$_SESSION['gameover'] = true;
 } else {
 
 
@@ -208,7 +215,7 @@ for ($j=1; $j<$_SESSION['nbJoueursTotal']; ++$j) {
 		if ($res == false) {
 			write_log("The following request has been failed : $req\n");
 		}
-		$_SESSION['victoryReason'] = "Mister X est entouré!";
+		$_SESSION['gameEndedMessage'] = "Mister X est entouré!";
 
 		$req = "UPDATE scotlandyard_project.joueur SET scoreJ=scoreJ+1 WHERE nicknameJ='$_SESSION[nicknameJActuel]';";
 		$res = mysqli_query($connection, $req);
@@ -216,7 +223,8 @@ for ($j=1; $j<$_SESSION['nbJoueursTotal']; ++$j) {
 			write_log("The following request has been failed : $req\n");
 		}
 
-		header("Location: $url/scotlandyard/index.php?page=victory");
+		$_SESSION['gameEnded'] = true;
+		$_SESSION['victory'] = true;
 	} else {
 		if ($_SESSION['tourActuel'] == 1) {
 			do {
@@ -493,7 +501,7 @@ if ($_SESSION['tourActuel'] != 1) {
 		if ($res == false) {
 			write_log("The following request has been failed : $req\n");
 		}
-		$_SESSION['victoryReason'] = "Vous avez attrapé Mister X!";
+		$_SESSION['gameEndedMessage'] = "Vous avez attrapé Mister X!";
 
 		$req = "UPDATE scotlandyard_project.joueur SET scoreJ=scoreJ+1 WHERE nicknameJ='$_SESSION[nicknameJActuel]';";
 		$res = mysqli_query($connection, $req);
@@ -501,7 +509,8 @@ if ($_SESSION['tourActuel'] != 1) {
 			write_log("The following request has been failed : $req\n");
 		}
 
-		header("Location: $url/scotlandyard/index.php?page=victory");
+		$_SESSION['gameEnded'] = true;
+		$_SESSION['victory'] = true;
 	}
 	for ($i=0; $i<$_SESSION['nbDetectives']; ++$i) {
 		if ($_SESSION['idQNextMX'][0] == $_SESSION['idQNextDet'][$i][0]) {
@@ -511,7 +520,7 @@ if ($_SESSION['tourActuel'] != 1) {
 			if ($res == false) {
 				write_log("The following request has been failed : $req\n");
 			}
-			$_SESSION['victoryReason'] = "Le detective ".($i+1)." a attrapé Mister X!";
+			$_SESSION['gameEndedMessage'] = "Le detective ".($i+1)." a attrapé Mister X!";
 
 			$req = "UPDATE scotlandyard_project.joueur SET scoreJ=scoreJ+1 WHERE nicknameJ='$_SESSION[nicknameJActuel]';";
 			$res = mysqli_query($connection, $req);
@@ -519,11 +528,32 @@ if ($_SESSION['tourActuel'] != 1) {
 				write_log("The following request has been failed : $req\n");
 			}
 
-			header("Location: $url/scotlandyard/index.php?page=victory");
+			$_SESSION['gameEnded'] = true;
+			$_SESSION['victory'] = true;
 		}
 	}
 }
 
+}
+
+
+
+
+// Passing PHP variables to JS (RETURNING them in a JSON format to the client)
+if (isset($_POST['isFetch']) && $_POST['isFetch'] == 'true') {
+	header('Content-type: application/json');
+	echo json_encode($_SESSION);
+
+	if (isset($_SESSION['gameEnded']) && $_SESSION['gameEnded'] == true) {
+		session_destroy();
+	}
+
+	// Le Mister X se deplace
+	$_SESSION['idQPosActuel'][0] = $_SESSION['idQNextMX'][0]; // idQ
+	$_SESSION['transportUtilise'][0] = $_SESSION['idQNextMX'][1]; // transport
+
+	// On incremente le tour actuel
+	++$_SESSION['tourActuel'];
 }
 
 ?>

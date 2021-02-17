@@ -166,7 +166,7 @@ h1, h2, h3, h4 {
 	font-size: 20px;
 	text-transform: uppercase;
 	padding: 5px 10px;
-	margin: 10px 0;
+	margin: 10px 10px;
 	transition: color .4s, background-color .4s;
 	vertical-align: middle;
 }
@@ -425,6 +425,28 @@ section.gameoverWrapper, section.victoryWrapper {
 	align-items: flex-start;
 }
 
+#game-ended-window {
+	border-radius: 10px;
+	background: rgba(200, 200, 200, 0.6);
+	position: fixed;
+	width: 50%;
+	height: 50%;
+	text-align: center;
+	z-index: 1000;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	flex-wrap: wrap;
+	align-content: center;
+}
+
+#game-ended-window > * {
+	display: flex;
+	flex-basis: 100%;
+	justify-content: center;
+}
+
 section.victoryWrapper > span {
 	width: 100%;
 	text-align: center;
@@ -451,7 +473,7 @@ section.victoryWrapper pre#logs {
 	text-align: center;
 }
 
-.gameover, .victory {
+#game-ended-title {
 	font-family: Diploma;
 	font-size: 70px;
 	margin: 0 auto;
